@@ -23,6 +23,15 @@ public function store(Request $request)
     return response()->json($post, 201);
 }
 
+public function destroy($id)
+{
+    $post = Post::findOrFail($id);
+    $post->delete();
+
+    return response()->json(null, 204);
+}
+
+
 public function index()
 {
     // Get all posts
