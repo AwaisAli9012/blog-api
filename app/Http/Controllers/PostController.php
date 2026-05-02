@@ -1,11 +1,27 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Http\Request;
 
 use App\Models\Post; // we need the Post model
 
 class PostController extends Controller
 {
+
+public function store(Request $request)
+{
+    // Validate incoming data
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string',
+    ]);
+
+    // Create a new post using the validated data
+    $post = Post::create($validated);
+
+    // Return the new post as JSON with status code 201 (Created)
+    return response()->json($post, 201);
+}
 
 public function index()
 {
