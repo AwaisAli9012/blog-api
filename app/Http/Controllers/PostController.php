@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-
 use App\Models\Post; // we need the Post model
 
 class PostController extends Controller
@@ -34,12 +33,12 @@ public function destroy($id)
 
 public function index()
 {
-    // Get all posts
-    $posts=\App\Models\Post::all();
+    // Fetch all posts and return them as JSON
+    $posts = Post::all();
 
-    // Return them as JSON
     return response()->json($posts);
 }
+
    public function show($id)
 {
     // Find the post by its ID
