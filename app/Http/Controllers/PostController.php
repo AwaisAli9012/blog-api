@@ -9,7 +9,8 @@ class PostController extends Controller
    public function show($id)
 {
     // Find the post by its ID
-    $post = \App\Models\Post::findOrFail($id);
+   return $post = \App\Models\Post::findOrFail($id);
+    
 
     // Return it as JSON
     return response()->json($post);
