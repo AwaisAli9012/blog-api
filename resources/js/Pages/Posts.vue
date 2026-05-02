@@ -18,6 +18,11 @@ function submit() {
     content: content.value
   })
 }
+
+// Delete function
+function remove(id) {
+  router.delete(`/posts/${id}`)
+}
 </script>
 
 <template>
@@ -26,6 +31,7 @@ function submit() {
     <ul>
       <li v-for="post in posts" :key="post.id">
         <strong>{{ post.title }}</strong> - {{ post.content }}
+        <button @click="remove(post.id)">Delete</button>
       </li>
     </ul>
 
