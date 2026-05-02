@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use App\Models\Post; // we need the Post model
+use App\Models\Post; // we need the Post 
+// model
+use Inertia\Inertia;
 
 class PostController extends Controller
 {
@@ -36,7 +38,9 @@ public function index()
     // Fetch all posts and return them as JSON
     $posts = Post::all();
 
-    return response()->json($posts);
+    return Inertia::render('Posts', [
+        'posts' => $posts
+    ]);
 }
 
    public function show($id)
