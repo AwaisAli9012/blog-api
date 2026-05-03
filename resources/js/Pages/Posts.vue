@@ -60,7 +60,7 @@ function remove(id) {
       </div>
 
       <!-- Create Post Form -->
-      <div style="background:white;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.15);padding:32px">
+      <div v-if="auth" style="background:white;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.15);padding:32px">
         <h2 style="font-size:1.6rem;font-weight:800;color:#1a1a2e;margin:0 0 6px">Create New Post</h2>
         <p style="color:#9ca3af;margin:0 0 24px;font-size:0.9rem">Fill in the details below to publish your post</p>
 
@@ -86,6 +86,14 @@ function remove(id) {
             🚀 Publish Post
           </button>
         </form>
+      </div>
+
+      <!-- Guest prompt -->
+      <div v-else style="background:white;border-radius:20px;padding:32px;text-align:center">
+        <p style="color:#6b7280;font-size:1rem">Want to share your thoughts?
+          <a href="/login" style="color:#667eea;font-weight:700">Login</a> or
+          <a href="/register" style="color:#667eea;font-weight:700">Register</a>
+        </p>
       </div>
 
     </div>
