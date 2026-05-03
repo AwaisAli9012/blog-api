@@ -25,18 +25,19 @@ class PostController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-        ]);
+   {
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string',
+    ]);
 
-        $validated['slug'] = Str::slug($validated['title']) . '-' . uniqid();
+    $validated['slug'] = Str::slug($validated['title']) . '-' . uniqid();
+    $validated['user_id'] = auth()->id();
 
-        Post::create($validated);
+    Post::create($validated);
 
-        return redirect('/posts');
-    }
+    return redirect('/posts');
+   }
 
     public function update(Request $request, $id)
     {
