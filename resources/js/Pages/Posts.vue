@@ -31,7 +31,7 @@ function logout() {
 
       <!-- Navbar -->
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px">
-        <span style="color:white;font-size:1.2rem;font-weight:800">✍️ My Blog</span>
+        <a href="/posts" style="color:white;font-size:1.2rem;font-weight:800;text-decoration:none">✍️ My Blog</a>
         <div style="display:flex;gap:12px">
           <template v-if="auth">
             <span style="color:rgba(255,255,255,0.9);font-size:0.9rem;align-self:center">Hi, {{ auth.name }}</span>
@@ -64,6 +64,7 @@ function logout() {
             </div>
             <p style="color:#6b7280;font-size:0.95rem;margin:0 0 12px;line-height:1.6">{{ post.content }}</p>
             <span style="font-size:0.75rem;color:#a0aec0;background:#f7fafc;padding:3px 10px;border-radius:20px">📅 Just now</span>
+            <span v-if="post.user" style="font-size:0.75rem;color:#a0aec0;background:#f7fafc;padding:3px 10px;border-radius:20px;margin-left:6px">✍️ {{ post.user.name }}</span>
           </div>
           <button v-if="auth" @click="remove(post.id)"
             style="margin-left:20px;background:#fff0f0;color:#ef4444;border:1px solid #fecaca;border-radius:8px;padding:6px 14px;cursor:pointer;font-weight:600;font-size:0.85rem;transition:background 0.2s"
