@@ -1,4 +1,3 @@
-cat > bootstrap/app.php << 'EOF'
 <?php
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -26,4 +25,3 @@ if (env('APP_ENV') === 'production') {
 }
 
 return $app;
-EOF
