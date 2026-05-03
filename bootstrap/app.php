@@ -21,3 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
+
+// Force HTTPS in production
+if (env('APP_ENV') === 'production') {
+    \Illuminate\Support\Facades\URL::forceScheme('https');
+}
