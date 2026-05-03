@@ -45,7 +45,7 @@ function remove(id) {
             <p style="color:#6b7280;font-size:0.95rem;margin:0 0 12px;line-height:1.6">{{ post.content }}</p>
             <span style="font-size:0.75rem;color:#a0aec0;background:#f7fafc;padding:3px 10px;border-radius:20px">📅 Just now</span>
           </div>
-          <button @click="remove(post.id)"
+          <button v-if="auth" @click="remove(post.id)"
             style="margin-left:20px;background:#fff0f0;color:#ef4444;border:1px solid #fecaca;border-radius:8px;padding:6px 14px;cursor:pointer;font-weight:600;font-size:0.85rem;transition:background 0.2s"
             onmouseover="this.style.background='#fee2e2'"
             onmouseout="this.style.background='#fff0f0'">
