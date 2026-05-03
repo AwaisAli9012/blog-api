@@ -60,7 +60,7 @@ function logout() {
           <div style="flex:1">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
               <div style="width:8px;height:8px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%"></div>
-              <h2 style="font-size:1.2rem;font-weight:700;color:#1a1a2e;margin:0">{{ post.title }}</h2>
+              <a :href="`/posts/${post.id}`" style="font-size:1.2rem;font-weight:700;color:#1a1a2e;text-decoration:none">{{ post.title }}</a>
             </div>
             <p style="color:#6b7280;font-size:0.95rem;margin:0 0 12px;line-height:1.6">{{ post.content }}</p>
             <span style="font-size:0.75rem;color:#a0aec0;background:#f7fafc;padding:3px 10px;border-radius:20px">📅 Just now</span>

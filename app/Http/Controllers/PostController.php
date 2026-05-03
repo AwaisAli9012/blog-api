@@ -21,8 +21,11 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = Post::findOrFail($id);
-        return response()->json($post);
+    $post = Post::with('user')->findOrFail($id);
+    return Inertia::render('Post', [
+        'post' => $post,
+        'auth' => auth()->user()
+    ]);
     }
 
     public function store(Request $request)
