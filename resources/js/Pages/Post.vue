@@ -60,7 +60,7 @@ function remove(id) {
         <div style="color:#374151;font-size:1.05rem;line-height:1.8;white-space:pre-wrap">{{ post.content }}</div>
 
         <!-- Delete button (only for logged in users) -->
-        <div v-if="auth" style="margin-top:40px;padding-top:24px;border-top:2px solid #f3f4f6">
+        <div v-if="auth && auth.id === post.user_id" style="margin-top:40px;padding-top:24px;border-top:2px solid #f3f4f6">
           <button @click="remove(post.id)"
             style="background:#fff0f0;color:#ef4444;border:1px solid #fecaca;border-radius:8px;padding:8px 20px;cursor:pointer;font-weight:600;font-size:0.9rem">
             🗑 Delete Post
