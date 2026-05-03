@@ -14,6 +14,8 @@ class AppServiceProvider extends ServiceProvider
         Vite::prefetch(concurrency: 3);
         if (app()->environment('production')) {
             URL::forceScheme('https');
+        $this->app['config']->set('session.secure', true);
+        $this->app['config']->set('session.same_site', 'none');
         }
     }
 }
