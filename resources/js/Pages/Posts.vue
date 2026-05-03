@@ -19,11 +19,31 @@ function submit() {
 function remove(id) {
   if (confirm('Are you sure?')) router.delete(`/posts/${id}`)
 }
+
+function logout() {
+  router.post('/logout')
+}
 </script>
 
 <template>
   <div style="min-height:100vh;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:40px 16px;font-family:'Segoe UI',sans-serif">
     <div style="max-width:760px;margin:0 auto">
+
+      <!-- Navbar -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px">
+        <span style="color:white;font-size:1.2rem;font-weight:800">✍️ My Blog</span>
+        <div style="display:flex;gap:12px">
+          <template v-if="auth">
+            <span style="color:rgba(255,255,255,0.9);font-size:0.9rem;align-self:center">Hi, {{ auth.name }}</span>
+            <a href="/dashboard" style="color:white;background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:8px;text-decoration:none;font-size:0.9rem;font-weight:600">Dashboard</a>
+            <a href="#" style="color:white;background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:8px;text-decoration:none;font-size:0.9rem;font-weight:600" @click.prevent="logout">Logout</a>
+          </template>
+          <template v-else>
+            <a href="/login" style="color:white;background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:8px;text-decoration:none;font-size:0.9rem;font-weight:600">Login</a>
+            <a href="/register" style="color:white;background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:8px;text-decoration:none;font-size:0.9rem;font-weight:600">Register</a>
+          </template>
+        </div>
+      </div>
 
       <!-- Header -->
       <div style="text-align:center;margin-bottom:40px">
