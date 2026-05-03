@@ -14,7 +14,8 @@ class PostController extends Controller
         $posts = Post::all();
 
         return Inertia::render('Posts', [
-            'posts' => $posts
+            'posts' => $posts,
+            'auth' => auth()->user()
         ]);
     }
 

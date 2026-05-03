@@ -2,7 +2,10 @@
 import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
 
-defineProps({ posts: Array })
+defineProps({ 
+    posts: Array,
+    auth: Object
+})
 
 const title = ref('')
 const content = ref('')
