@@ -2,55 +2,60 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use App\Models\Post; // we need the Post 
-// model
+use App\Models\Post;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
 
-public function store(Request $request)
-{
-    // Validate incoming data
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'content' => 'required|string',
-    ]);
+    public function index()
+    {
+        $posts = Post::all();
 
-    // Create a new post using the validated data
-    $post = Post::create($validated);
+        return Inertia::render('Posts', [
+            'posts' => $posts
+        ]);
+    }
 
-    // Return the new post as JSON with status code 201 (Created)
-    return response()->json($post, 201);
-}
+    public function show($id)
+    {
+        $post = Post::findOrFail($id);
+        return response()->json($post);
+    }
 
-public function destroy($id)
-{
-    $post = Post::findOrFail($id);
-    $post->delete();
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
 
-    return response()->json(null, 204);
-}
+        $validated['slug'] = Str::slug($validated['title']) . '-' . uniqid();
 
+        Post::create($validated);
 
-public function index()
-{
-    // Fetch all posts and return them as JSON
-    $posts = Post::all();
+        return redirect('/posts');
+    }
 
-    return Inertia::render('Posts', [
-        'posts' => $posts
-    ]);
-}
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
 
-   public function show($id)
-{
-    // Find the post by its ID
-   $post = \App\Models\Post::findOrFail($id);
-    
+        $post = Post::findOrFail($id);
+        $post->update($validated);
 
-    // Return it as JSON
-    return response()->json($post);
-}
+        return redirect('/posts');
+    }
 
+    public function destroy($id)
+    {
+        $post = Post::findOrFail($id);
+        $post->delete();
+
+        return redirect('/posts');
+    }
 }
