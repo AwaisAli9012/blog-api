@@ -22,11 +22,10 @@ class AuthenticatedSessionController extends Controller
     }
 
     public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
-        $request->session()->regenerate();
-        $request->session()->save();
-        return redirect()->intended('/posts');
+  {
+    $request->authenticate();
+    $request->session()->regenerate();
+    return redirect()->intended('/posts');
     }
 
     public function destroy(Request $request): RedirectResponse
