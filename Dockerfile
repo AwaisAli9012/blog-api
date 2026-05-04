@@ -1,5 +1,7 @@
 FROM php:8.4-apache
 
+RUN a2dismod mpm_event mpm_worker && a2enmod mpm_prefork
+
 RUN apt-get update && apt-get install -y \
     git curl zip unzip libpng-dev libonig-dev libxml2-dev nodejs npm \
     && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
@@ -23,4 +25,3 @@ RUN a2enmod rewrite
 EXPOSE 80
 
 CMD ["apache2-foreground"]
-# cache bust
