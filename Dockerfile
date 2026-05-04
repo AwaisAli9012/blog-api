@@ -16,8 +16,10 @@ RUN npm install && npm run build
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
 
-COPY docker/nginx.conf /etc/nginx/sites-available/default
+COPY docker/nginx.conf /etc/nginx/templates/default.conf.template
+
+RUN a2dismod mpm_event || true
 
 EXPOSE 80
 
-CMD service nginx start && php-fpm
+CMD envsubst '$PORT' < /etc/nginx/templates/default.conf.template > /etc/nginx/sites-available/default && service nginx start && php-fpm
