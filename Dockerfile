@@ -20,4 +20,4 @@ COPY docker/nginx.conf /etc/nginx/templates/default.conf.template
 
 EXPOSE 80
 
-CMD envsubst '$PORT' < /etc/nginx/templates/default.conf.template > /etc/nginx/sites-available/default && php artisan migrate --force && service nginx start && php-fpm
+CMD envsubst '$PORT' < /etc/nginx/templates/default.conf.template > /etc/nginx/sites-available/default && service nginx start && php-fpm
