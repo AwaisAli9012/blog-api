@@ -1,7 +1,7 @@
 FROM php:8.4-fpm
 
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip libpng-dev libonig-dev libxml2-dev nodejs npm nginx gettext-base \
+    git curl zip unzip libpng-dev libonig-dev libxml2-dev nodejs npm nginx \
     && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -18,8 +18,10 @@ RUN npm install && npm run build
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
 
-COPY docker/nginx.conf /etc/nginx/templates/default.conf.template
+COPY docker/nginx.conf /etc/nginx/sites-available/default
+COPY docker/start.sh /start.sh
+RUN chmod +x /start.sh
 
-EXPOSE 80
+EXPOSE 8080
 
-CMD envsubst '$PORT' < /etc/nginx/templates/default.conf.template > /etc/nginx/sites-available/default && service nginx start && php-fpm
+CMD ["/start.sh"]
