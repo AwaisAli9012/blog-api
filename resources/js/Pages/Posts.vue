@@ -107,7 +107,7 @@ function confirmLogout() {
         <div style="margin-top:16px;border-top:1px solid #f3f4f6;padding-top:12px">
           <button @click="toggleComments(post.id)"
             style="background:none;border:none;cursor:pointer;color:#667eea;font-size:0.85rem;font-weight:600;padding:0;display:flex;align-items:center;gap:6px">
-            💬 {{ post.comments ? post.comments.length : 0 }} Comment{{ post.comments?.length !== 1 ? 's' : '' }}
+            💬 {{ (post.comments ?? []).length }} Comment{{ post.comments?.length !== 1 ? 's' : '' }}
             <span style="font-size:0.7rem">{{ openComments[post.id] ? '▲' : '▼' }}</span>
           </button>
 
@@ -115,7 +115,7 @@ function confirmLogout() {
 
             <!-- Existing comments -->
             <div v-if="post.comments && post.comments.length > 0">
-              <div v-for="comment in post.comments" :key="comment.id"
+              <div v-for="comment in (post.comments ?? [])" :key="comment.id"
                 style="background:#f9fafb;border-radius:10px;padding:12px 16px;border-left:3px solid #667eea">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
                   <div style="width:28px;height:28px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:0.75rem;font-weight:700">
