@@ -24,3 +24,4 @@ RUN chmod +x /start.sh
 EXPOSE 8080
 
 CMD ["/start.sh"]
+# force-rebuild-1778074080
