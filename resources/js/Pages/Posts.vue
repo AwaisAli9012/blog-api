@@ -14,6 +14,20 @@ const content = ref('')
 const showDeleteModal = ref(false)
 const showLogoutModal = ref(false)
 const deletePostId = ref(null)
+const openComments = ref({})
+const commentText = ref({})
+
+function toggleComments(postId) {
+  openComments.value[postId] = !openComments.value[postId]
+  if (!commentText.value[postId]) commentText.value[postId] = ''
+}
+
+function submitComment(postId) {
+  if (!commentText.value[postId]?.trim()) return
+  router.post(`/posts/${postId}/comments`, { body: commentText.value[postId] }, {
+    onSuccess: () => { commentText.value[postId] = '' }
+  })
+}
 
 function submit() {
   router.post('/posts', { title: title.value, content: content.value }, {
@@ -87,6 +101,57 @@ function confirmLogout() {
             onmouseout="this.style.background='#fff0f0'">
             🗑 Delete
           </button>
+        </div>
+
+        <!-- Comments Section -->
+        <div style="margin-top:16px;border-top:1px solid #f3f4f6;padding-top:12px">
+          <button @click="toggleComments(post.id)"
+            style="background:none;border:none;cursor:pointer;color:#667eea;font-size:0.85rem;font-weight:600;padding:0;display:flex;align-items:center;gap:6px">
+            💬 {{ post.comments ? post.comments.length : 0 }} Comment{{ post.comments?.length !== 1 ? 's' : '' }}
+            <span style="font-size:0.7rem">{{ openComments[post.id] ? '▲' : '▼' }}</span>
+          </button>
+
+          <div v-if="openComments[post.id]" style="margin-top:14px;display:flex;flex-direction:column;gap:12px">
+
+            <!-- Existing comments -->
+            <div v-if="post.comments && post.comments.length > 0">
+              <div v-for="comment in post.comments" :key="comment.id"
+                style="background:#f9fafb;border-radius:10px;padding:12px 16px;border-left:3px solid #667eea">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                  <div style="width:28px;height:28px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:0.75rem;font-weight:700">
+                    {{ comment.user?.name?.charAt(0).toUpperCase() }}
+                  </div>
+                  <span style="font-weight:600;font-size:0.85rem;color:#1a1a2e">{{ comment.user?.name }}</span>
+                </div>
+                <p style="margin:0;font-size:0.9rem;color:#4b5563;line-height:1.5">{{ comment.body }}</p>
+              </div>
+            </div>
+
+            <div v-else style="color:#9ca3af;font-size:0.85rem;text-align:center;padding:8px">
+              No comments yet. Be the first!
+            </div>
+
+            <!-- Add comment input -->
+            <div v-if="auth" style="display:flex;gap:8px;margin-top:4px">
+              <input
+                v-model="commentText[post.id]"
+                placeholder="Write a comment..."
+                @keyup.enter="submitComment(post.id)"
+                style="flex:1;border:2px solid #e5e7eb;border-radius:8px;padding:8px 12px;font-size:0.85rem;outline:none;color:#1f2937"
+                onfocus="this.style.borderColor='#667eea'"
+                onblur="this.style.borderColor='#e5e7eb'"
+              />
+              <button @click="submitComment(post.id)"
+                style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:8px;padding:8px 16px;font-size:0.85rem;font-weight:600;cursor:pointer">
+                Post
+              </button>
+            </div>
+
+            <p v-else style="font-size:0.8rem;color:#9ca3af;margin:0">
+              <a href="/login" style="color:#667eea;font-weight:600">Login</a> to leave a comment
+            </p>
+
+          </div>
         </div>
 
         <div v-if="posts.length === 0"
