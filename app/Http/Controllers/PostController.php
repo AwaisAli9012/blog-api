@@ -13,7 +13,7 @@ class PostController extends Controller
     {
         $posts = Post::with(["user","comments"])->latest()->get();
 
-        return Inertia::render('Posts', [
+        return response()->json([
             'posts' => $posts,
             'auth' => auth()->user()
         ]);
