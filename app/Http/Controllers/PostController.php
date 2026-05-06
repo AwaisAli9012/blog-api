@@ -30,6 +30,16 @@ class PostController extends Controller
     }
 
     public function show($id)
+ 
+    public function apiShow($id)
+    {
+        $post = Post::with(["user","comments"])->findOrFail($id);
+        return response()->json([
+            "post" => $post,
+            "auth" => auth()->user()
+        ]);
+    }
+
     {
     $post = Post::with('user')->findOrFail($id);
     return Inertia::render('Post', [

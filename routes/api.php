@@ -8,3 +8,4 @@ Route::get('/posts/{id}', [PostController::class, 'show']);
 Route::post('/posts', [PostController::class, 'store']);
 Route::put('/posts/{id}', [PostController::class, 'update']);
 Route::delete('/posts/{id}', [PostController::class, 'destroy']);Route::get('/posts', [App\Http\Controllers\PostController::class, 'apiIndex']);
+Route::get('/posts/{id}', [App\Http\Controllers\PostController::class, 'apiShow']);
