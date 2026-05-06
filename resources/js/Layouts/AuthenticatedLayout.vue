@@ -5,7 +5,13 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
+
+const handleLogout = () => {
+    if (confirm('Are you sure you want to log out?')) {
+        router.post(route('logout'));
+    }
+};
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -76,13 +82,9 @@ const showingNavigationDropdown = ref(false);
                                         >
                                             Profile
                                         </DropdownLink>
-                                        <DropdownLink
-                                            :href="route('logout')"
-                                            method="post"
-                                            as="button"
-                                        >
+                                        <button @click="handleLogout" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
                                             Log Out
-                                        </DropdownLink>
+                                        </button>
                                     </template>
                                 </Dropdown>
                             </div>
@@ -167,13 +169,9 @@ const showingNavigationDropdown = ref(false);
                             <ResponsiveNavLink :href="route('profile.edit')">
                                 Profile
                             </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                :href="route('logout')"
-                                method="post"
-                                as="button"
-                            >
+                            <button @click="handleLogout" class="block w-full ps-3 pe-4 py-2 text-start text-sm font-medium text-gray-600 hover:bg-gray-50">
                                 Log Out
-                            </ResponsiveNavLink>
+                            </button>
                         </div>
                     </div>
                 </div>
