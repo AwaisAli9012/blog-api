@@ -102,7 +102,6 @@ function confirmLogout() {
             onmouseout="this.style.background='#fff0f0'">
             🗑 Delete
           </button>
-        </div>
 
         <!-- Comments Section -->
         <div style="margin-top:16px;border-top:1px solid #f3f4f6;padding-top:12px">
