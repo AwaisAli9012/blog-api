@@ -10,6 +10,16 @@ class PostController extends Controller
 {
 
     public function index()
+ 
+    public function apiIndex()
+    {
+        $posts = Post::with(["user","comments"])->latest()->get();
+        return response()->json([
+            "posts" => $posts,
+            "auth" => auth()->user()
+        ]);
+    }
+
     {
         $posts = Post::with(["user","comments"])->latest()->get();
 
