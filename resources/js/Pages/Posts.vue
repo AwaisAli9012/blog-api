@@ -17,6 +17,7 @@ const deletePostId = ref(null)
 const openComments = ref({})
 const commentText = ref({})
 
+
 function toggleComments(postId) {
   openComments.value[postId] = !openComments.value[postId]
   if (!commentText.value[postId]) commentText.value[postId] = ''
