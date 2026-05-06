@@ -9,8 +9,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 COPY . .
-
-RUN rm -f .env
+COPY docker/Dockerfile.env .env
 
 RUN composer install --no-dev --optimize-autoloader
 RUN npm install && npm run build
