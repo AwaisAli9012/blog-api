@@ -12,7 +12,7 @@ COPY . .
 COPY docker/Dockerfile.env .env
 
 RUN composer install --no-dev --optimize-autoloader
-RUN npm install && npm run build
+RUN npm install && npm run build # cache-bust-2
 
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
