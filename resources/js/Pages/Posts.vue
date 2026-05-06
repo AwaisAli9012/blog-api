@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import ConfirmModal from '@/Components/ConfirmModal.vue'
 import { router } from '@inertiajs/vue3'
 
 defineProps({ 
@@ -10,6 +11,10 @@ defineProps({
 const title = ref('')
 const content = ref('')
 
+const showDeleteModal = ref(false)
+const showLogoutModal = ref(false)
+const deletePostId = ref(null)
+
 function submit() {
   router.post('/posts', { title: title.value, content: content.value }, {
     onSuccess: () => { title.value = ''; content.value = '' }
@@ -17,10 +22,20 @@ function submit() {
 }
 
 function remove(id) {
-  if (confirm('Are you sure?')) router.delete(`/posts/${id}`)
+  deletePostId.value = id
+  showDeleteModal.value = true
+}
+
+function confirmDelete() {
+  router.delete(`/posts/${deletePostId.value}`)
+  showDeleteModal.value = false
 }
 
 function logout() {
+  showLogoutModal.value = true
+}
+
+function confirmLogout() {
   router.post('/logout')
 }
 </script>
@@ -119,4 +134,24 @@ function logout() {
 
     </div>
   </div>
+
+  <ConfirmModal
+    :show="showDeleteModal"
+    title="Delete Post"
+    message="Are you sure you want to delete this post? This cannot be undone."
+    confirmText="Delete"
+    confirmColor="#ef4444"
+    @confirm="confirmDelete"
+    @cancel="showDeleteModal = false"
+  />
+
+  <ConfirmModal
+    :show="showLogoutModal"
+    title="Log Out"
+    message="Are you sure you want to log out?"
+    confirmText="Log Out"
+    confirmColor="#667eea"
+    @confirm="confirmLogout"
+    @cancel="showLogoutModal = false"
+  />
 </template>

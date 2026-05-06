@@ -6,11 +6,16 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link, router } from '@inertiajs/vue3';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
+
+const showLogoutModal = ref(false);
 
 const handleLogout = () => {
-    if (confirm('Are you sure you want to log out?')) {
-        router.post(route('logout'));
-    }
+    showLogoutModal.value = true;
+};
+
+const confirmLogout = () => {
+    router.post(route('logout'));
 };
 
 const showingNavigationDropdown = ref(false);
@@ -193,4 +198,14 @@ const showingNavigationDropdown = ref(false);
             </main>
         </div>
     </div>
+
+    <ConfirmModal
+        :show="showLogoutModal"
+        title="Log Out"
+        message="Are you sure you want to log out?"
+        confirmText="Log Out"
+        confirmColor="#667eea"
+        @confirm="confirmLogout"
+        @cancel="showLogoutModal = false"
+    />
 </template>
