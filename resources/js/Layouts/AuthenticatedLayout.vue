@@ -202,9 +202,10 @@ const showingNavigationDropdown = ref(false);
     <ConfirmModal
         :show="showLogoutModal"
         title="Log Out"
-        message="Are you sure you want to log out?"
+        message="You can always log back in anytime."
         confirmText="Log Out"
-        confirmColor="#667eea"
+        confirmColor="#f97316"
+        icon="🔐"
         @confirm="confirmLogout"
         @cancel="showLogoutModal = false"
     />

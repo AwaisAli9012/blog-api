@@ -141,6 +141,7 @@ function confirmLogout() {
     message="Are you sure you want to delete this post? This cannot be undone."
     confirmText="Delete"
     confirmColor="#ef4444"
+    icon="🗑️"
     @confirm="confirmDelete"
     @cancel="showDeleteModal = false"
   />
@@ -148,9 +149,10 @@ function confirmLogout() {
   <ConfirmModal
     :show="showLogoutModal"
     title="Log Out"
-    message="Are you sure you want to log out?"
+    message="You can always log back in anytime."
     confirmText="Log Out"
-    confirmColor="#667eea"
+    confirmColor="#f97316"
+    icon="🔐"
     @confirm="confirmLogout"
     @cancel="showLogoutModal = false"
   />
