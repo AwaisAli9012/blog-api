@@ -16,8 +16,9 @@ RUN npm install
 COPY . .
 COPY docker/Dockerfile.env .env
 
-RUN npm run build
 RUN composer install --no-dev --optimize-autoloader
+RUN npm run build
+
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage
 
