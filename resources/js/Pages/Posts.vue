@@ -3,13 +3,14 @@ import { ref } from 'vue'
 import ConfirmModal from '@/Components/ConfirmModal.vue'
 import { router } from '@inertiajs/vue3'
 
-defineProps({
+defineProps({ 
     posts: Array,
     auth: Object
 })
 
 const title = ref('')
 const content = ref('')
+
 const showDeleteModal = ref(false)
 const showLogoutModal = ref(false)
 const deletePostId = ref(null)
@@ -17,21 +18,39 @@ const openComments = ref({})
 const commentText = ref({})
 
 function toggleComments(postId) {
-  openComments.value[postId] = !openComments.value[postId]
-  if (!commentText.value[postId]) commentText.value[postId] = ''
+  openComments.value = {
+    ...openComments.value,
+    [postId]: !openComments.value[postId]
+  }
+
+  if (!commentText.value[postId]) {
+    commentText.value[postId] = ''
+  }
 }
 
 function submitComment(postId) {
   if (!commentText.value[postId]?.trim()) return
-  router.post(`/posts/${postId}/comments`, { body: commentText.value[postId] }, {
-    onSuccess: () => { commentText.value[postId] = '' }
-  })
+
+  router.post(`/posts/${postId}/comments`, 
+    { body: commentText.value[postId] }, 
+    {
+      onSuccess: () => {
+        commentText.value[postId] = ''
+      }
+    }
+  )
 }
 
 function submit() {
-  router.post('/posts', { title: title.value, content: content.value }, {
-    onSuccess: () => { title.value = ''; content.value = '' }
-  })
+  router.post('/posts', 
+    { title: title.value, content: content.value }, 
+    {
+      onSuccess: () => {
+        title.value = ''
+        content.value = ''
+      }
+    }
+  )
 }
 
 function remove(id) {
@@ -40,8 +59,11 @@ function remove(id) {
 }
 
 function confirmDelete() {
-  router.delete(`/posts/${deletePostId.value}`)
-  showDeleteModal.value = false
+  router.delete(`/posts/${deletePostId.value}`, {
+    onSuccess: () => {
+      showDeleteModal.value = false
+    }
+  })
 }
 
 function logout() {
@@ -49,121 +71,377 @@ function logout() {
 }
 
 function confirmLogout() {
-  router.post('/logout')
+  router.post('/logout', {
+    onFinish: () => {
+      showLogoutModal.value = false
+    }
+  })
 }
 </script>
 
 <template>
-  <div style="min-height:100vh;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:40px 16px;font-family:'Segoe UI',sans-serif">
-    <div style="max-width:760px;margin:0 auto">
+  <div class="page">
+    <div class="container">
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px">
-        <a href="/posts" style="color:white;font-size:1.2rem;font-weight:800;text-decoration:none">My Blog</a>
-        <div style="display:flex;gap:12px">
-          <template v-if="auth">
-            <span style="color:rgba(255,255,255,0.9);font-size:0.9rem;align-self:center">Hi, {{ auth.name }}</span>
-            <a href="/dashboard" style="color:white;background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:8px;text-decoration:none;font-size:0.9rem;font-weight:600">Dashboard</a>
-            <a href="#" style="color:white;background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:8px;text-decoration:none;font-size:0.9rem;font-weight:600" @click.prevent="logout">Logout</a>
+      <!-- Navbar -->
+      <div class="navbar">
+        <a href="/posts" class="logo">✍️ My Blog</a>
+
+        <div class="nav-actions">
+          <template v-if="auth && auth.id">
+            <span class="user">Hi, {{ auth.name }}</span>
+            <a href="/dashboard" class="btn">Dashboard</a>
+            <a href="#" class="btn" @click.prevent="logout">Logout</a>
           </template>
+
           <template v-else>
-            <a href="/login" style="color:white;background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:8px;text-decoration:none;font-size:0.9rem;font-weight:600">Login</a>
-            <a href="/register" style="color:white;background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:8px;text-decoration:none;font-size:0.9rem;font-weight:600">Register</a>
+            <a href="/login" class="btn">Login</a>
+            <a href="/register" class="btn">Register</a>
           </template>
         </div>
       </div>
 
-      <div style="text-align:center;margin-bottom:40px">
-        <h1 style="font-size:2.8rem;font-weight:800;color:white;margin:0 0 8px">My Blog</h1>
-        <p style="color:rgba(255,255,255,0.8);font-size:1.1rem;margin:0">Share your thoughts with the world</p>
+      <!-- Header -->
+      <div class="header">
+        <h1>✍️ My Blog</h1>
+        <p>Share your thoughts with the world</p>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:20px;margin-bottom:40px">
+      <!-- Posts -->
+      <div class="posts">
 
-        <div v-for="post in posts" :key="post.id" style="background:white;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.12);padding:24px">
+        <div v-for="post in posts" :key="post.id" class="card">
 
-          <div style="display:flex;justify-content:space-between;align-items:flex-start">
-            <div style="flex:1">
-              <a :href="`/posts/${post.id}`" style="font-size:1.2rem;font-weight:700;color:#1a1a2e;text-decoration:none;display:block;margin-bottom:8px">{{ post.title }}</a>
-              <p style="color:#6b7280;font-size:0.95rem;margin:0 0 12px;line-height:1.6">{{ post.content }}</p>
-              <span v-if="post.user" style="font-size:0.75rem;color:#a0aec0;background:#f7fafc;padding:3px 10px;border-radius:20px">by {{ post.user.name }}</span>
+          <div class="card-content">
+            <a :href="`/posts/${post.id}`" class="title">
+              {{ post.title }}
+            </a>
+
+            <p class="content">{{ post.content }}</p>
+
+            <div class="meta">
+              <span>📅 Just now</span>
+              <span v-if="post.user">✍️ {{ post.user.name }}</span>
             </div>
-            <button v-if="auth && auth.id === post.user_id" @click="remove(post.id)"
-              style="margin-left:20px;background:#fff0f0;color:#ef4444;border:1px solid #fecaca;border-radius:8px;padding:6px 14px;cursor:pointer;font-weight:600;font-size:0.85rem">
-              Delete
-            </button>
           </div>
 
-          <div style="margin-top:16px;border-top:1px solid #f3f4f6;padding-top:12px">
-            <button @click="toggleComments(post.id)"
-              style="background:none;border:none;cursor:pointer;color:#667eea;font-size:0.85rem;font-weight:600;padding:0">
-              Comments ({{ (post.comments ?? []).length }})
-              {{ openComments[post.id] ? "▲" : "▼" }}
+          <button
+            v-if="auth && auth.id === post.user_id"
+            @click="remove(post.id)"
+            class="delete-btn"
+          >
+            🗑 Delete
+          </button>
+
+          <!-- ✅ COMMENTS INSIDE LOOP -->
+          <div class="comments">
+
+            <button @click="toggleComments(post.id)" class="comment-toggle">
+              💬 {{ (post.comments ?? []).length }} Comments
+              <span>{{ openComments[post.id] ? '▲' : '▼' }}</span>
             </button>
 
-            <div v-if="openComments[post.id]" style="margin-top:14px">
+            <div v-if="openComments[post.id]" class="comment-box">
+
+              <!-- Existing comments -->
               <div v-if="(post.comments ?? []).length > 0">
-                <div v-for="comment in (post.comments ?? [])" :key="comment.id"
-                  style="background:#f9fafb;border-radius:10px;padding:12px 16px;border-left:3px solid #667eea;margin-bottom:8px">
-                  <span style="font-weight:600;font-size:0.85rem;color:#1a1a2e">{{ comment.user?.name }}</span>
-                  <p style="margin:4px 0 0;font-size:0.9rem;color:#4b5563">{{ comment.body }}</p>
+                <div
+                  v-for="comment in (post.comments ?? [])"
+                  :key="comment.id || comment.created_at"
+                  class="comment"
+                >
+                  <div class="comment-avatar">
+                    {{ (comment.user?.name ?? "?").charAt(0).toUpperCase() }}
+                  </div>
+                  <div class="comment-body">
+                    <strong>{{ comment.user?.name ?? "Unknown" }}</strong>
+                    <p>{{ comment.body }}</p>
+                  </div>
                 </div>
               </div>
-              <div v-else style="color:#9ca3af;font-size:0.85rem;padding:8px">
-                No comments yet. Be the first!
+
+              <div v-else class="no-comments">
+                No comments yet.
               </div>
 
-              <div v-if="auth" style="display:flex;gap:8px;margin-top:8px">
-                <input v-model="commentText[post.id]" placeholder="Write a comment..." @keyup.enter="submitComment(post.id)"
-                  style="flex:1;border:2px solid #e5e7eb;border-radius:8px;padding:8px 12px;font-size:0.85rem;outline:none;color:#1f2937" />
-                <button @click="submitComment(post.id)"
-                  style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:8px;padding:8px 16px;font-size:0.85rem;font-weight:600;cursor:pointer">
-                  Post
-                </button>
+              <!-- Add comment -->
+              <div v-if="auth && auth.id" class="comment-input">
+                <input
+                  v-model="commentText[post.id]"
+                  placeholder="Write a comment..."
+                  
+                />
+                <button @click="submitComment(post.id)">Post</button>
               </div>
-              <p v-else style="font-size:0.8rem;color:#9ca3af;margin:8px 0 0">
-                <a href="/login" style="color:#667eea;font-weight:600">Login</a> to comment
+
+              <p v-else class="login-msg">
+                <a href="/login">Login</a> to comment
               </p>
+
             </div>
           </div>
 
         </div>
 
-        <div v-if="posts.length === 0" style="background:rgba(255,255,255,0.15);border-radius:16px;padding:48px;text-align:center">
-          <p style="color:white;font-size:1.1rem;margin:0">No posts yet. Be the first!</p>
+        <div v-if="posts.length === 0" class="empty">
+          No posts yet 🚀
         </div>
+
       </div>
 
-      <div v-if="auth" style="background:white;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.15);padding:32px">
-        <h2 style="font-size:1.6rem;font-weight:800;color:#1a1a2e;margin:0 0 24px">Create New Post</h2>
-        <form @submit.prevent="submit" style="display:flex;flex-direction:column;gap:16px">
-          <input v-model="title" placeholder="Post title..."
-            style="border:2px solid #e5e7eb;border-radius:10px;padding:12px 16px;font-size:1rem;outline:none;width:100%;box-sizing:border-box;color:#1f2937" />
-          <textarea v-model="content" placeholder="Post content..." rows="5"
-            style="border:2px solid #e5e7eb;border-radius:10px;padding:12px 16px;font-size:1rem;outline:none;width:100%;box-sizing:border-box;resize:vertical;color:#1f2937"></textarea>
-          <button type="submit"
-            style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;border-radius:10px;padding:14px 32px;font-size:1rem;font-weight:700;cursor:pointer;align-self:flex-start">
-            Publish Post
-          </button>
+      <!-- Create Post -->
+      <div v-if="auth && auth.id" class="create">
+
+        <h2>Create Post</h2>
+
+        <form @submit.prevent="submit">
+
+          <input
+            v-model="title"
+            placeholder="Title..."
+          />
+
+          <textarea
+            v-model="content"
+            placeholder="Content..."
+          ></textarea>
+
+          <button type="submit">Publish</button>
+
         </form>
-      </div>
-
-      <div v-else style="background:white;border-radius:20px;padding:32px;text-align:center">
-        <p style="color:#6b7280;font-size:1rem">
-          <a href="/login" style="color:#667eea;font-weight:700">Login</a> or
-          <a href="/register" style="color:#667eea;font-weight:700">Register</a> to post
-        </p>
       </div>
 
     </div>
   </div>
 
-  <ConfirmModal :show="showDeleteModal" title="Delete Post"
-    message="Are you sure you want to delete this post?"
-    confirmText="Delete" confirmColor="#ef4444" icon="delete"
-    @confirm="confirmDelete" @cancel="showDeleteModal = false" />
+  <!-- Modals -->
+  <ConfirmModal
+    :show="showDeleteModal"
+    title="Delete Post"
+    message="Are you sure?"
+    confirmText="Delete"
+    @confirm="confirmDelete"
+    @cancel="showDeleteModal = false"
+  />
 
-  <ConfirmModal :show="showLogoutModal" title="Log Out"
-    message="You can always log back in anytime."
-    confirmText="Log Out" confirmColor="#f97316" icon="logout"
-    @confirm="confirmLogout" @cancel="showLogoutModal = false" />
+  <ConfirmModal
+    :show="showLogoutModal"
+    title="Log Out"
+    message="You can log back in anytime."
+    confirmText="Log Out"
+    @confirm="confirmLogout"
+    @cancel="showLogoutModal = false"
+  />
 </template>
+
+<style scoped>
+.page {
+  min-height: 100vh;
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  padding: 40px 16px;
+}
+
+.container {
+  max-width: 760px;
+  margin: auto;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.logo {
+  color: white;
+  font-weight: bold;
+}
+
+.btn {
+  margin-left: 10px;
+  color: white;
+}
+
+.header {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+.title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.content {
+  margin: 10px 0;
+}
+
+.meta {
+  font-size: 12px;
+  color: gray;
+}
+
+.delete-btn {
+  color: red;
+  margin-top: 10px;
+}
+
+.comments {
+  margin-top: 20px;
+  border-top: 2px solid #f0f0ff;
+  padding-top: 16px;
+}
+
+.comment-toggle {
+  background: linear-gradient(135deg, #f0f0ff, #e8e8ff);
+  border: none;
+  cursor: pointer;
+  color: #667eea;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.comment-toggle:hover {
+  background: linear-gradient(135deg, #e8e8ff, #d8d8ff);
+}
+
+.comment-box {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comment {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px;
+  background: linear-gradient(135deg, #f8f9ff, #f0f0ff);
+  border-radius: 14px;
+  margin-bottom: 8px;
+}
+
+.comment-avatar {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 8px rgba(102,126,234,0.4);
+}
+
+.comment-body {
+  flex: 1;
+}
+
+.comment-body strong {
+  font-size: 0.85rem;
+  color: #1a1a2e;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.comment-body p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.no-comments {
+  text-align: center;
+  padding: 20px;
+  background: #f8f9ff;
+  border-radius: 14px;
+  border: 2px dashed #e0e0ff;
+  color: #a0aec0;
+  font-size: 0.9rem;
+}
+
+.comment-input {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: #f8f9ff;
+  padding: 12px;
+  border-radius: 14px;
+  border: 2px solid #e8e8ff;
+  margin-top: 4px;
+}
+
+.comment-input input {
+  flex: 1;
+  border: none;
+  background: white;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  outline: none;
+  color: #1f2937;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  width: auto;
+}
+
+.comment-input button {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+  width: auto;
+}
+
+.login-msg {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.login-msg a {
+  color: #667eea;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.create {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+input, textarea {
+  width: 100%;
+  margin-bottom: 10px;
+}
+</style>
