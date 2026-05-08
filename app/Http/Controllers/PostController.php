@@ -11,7 +11,7 @@ class PostController extends Controller
     // Inertia frontend routes
     public function index()
     {
-        $posts = Post::with(['user','comments'])->latest()->get();
+        $posts = Post::with(['user','comments.user'])->latest()->get();
 
         return Inertia::render('Posts', [
             'posts' => $posts,
@@ -21,7 +21,7 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = Post::with(['user','comments'])->findOrFail($id);
+        $post = Post::with(['user','comments.user'])->findOrFail($id);
 
         return Inertia::render('Post', [
             'post' => $post,
@@ -32,7 +32,7 @@ class PostController extends Controller
     // API JSON routes
     public function apiIndex()
     {
-        $posts = Post::with(['user','comments'])->latest()->get();
+        $posts = Post::with(['user','comments.user'])->latest()->get();
 
         return response()->json([
             'posts' => $posts,
@@ -42,7 +42,7 @@ class PostController extends Controller
 
     public function apiShow($id)
     {
-        $post = Post::with(['user','comments'])->findOrFail($id);
+        $post = Post::with(['user','comments.user'])->findOrFail($id);
 
         return response()->json([
             'post' => $post,
