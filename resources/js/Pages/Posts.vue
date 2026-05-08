@@ -28,6 +28,10 @@ function toggleComments(postId) {
   }
 }
 
+function deleteComment(commentId) {
+  router.delete(`/comments/${commentId}`)
+}
+
 function submitComment(postId) {
   if (!commentText.value[postId]?.trim()) return
 
@@ -154,7 +158,14 @@ function confirmLogout() {
                     {{ (comment.user?.name ?? "?").charAt(0).toUpperCase() }}
                   </div>
                   <div class="comment-body">
-                    <strong>{{ comment.user?.name ?? "Unknown" }}</strong>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                      <strong>{{ comment.user?.name ?? "Unknown" }}</strong>
+                      <button
+                        v-if="auth && auth.id === comment.user_id"
+                        @click="deleteComment(comment.id)"
+                        style="background:none;border:none;cursor:pointer;color:#f87171;font-size:0.8rem;padding:2px 6px;border-radius:6px;line-height:1"
+                      >🗑</button>
+                    </div>
                     <p>{{ comment.body }}</p>
                   </div>
                 </div>

@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/posts/{id}', [PostController::class, 'update']);
     Route::delete('/posts/{id}', [PostController::class, 'destroy']);
     Route::post('/posts/{id}/comments', [CommentController::class, 'store']);
+    Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
 });
 
 require __DIR__.'/auth.php';

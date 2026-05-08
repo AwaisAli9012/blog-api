@@ -21,4 +21,14 @@ class CommentController extends Controller
 
         return back();
     }
+
+    public function destroy($id)
+    {
+        $comment = \App\Models\Comment::findOrFail($id);
+        if (auth()->id() !== $comment->user_id) {
+            abort(403);
+        }
+        $comment->delete();
+        return back();
+    }
 }
