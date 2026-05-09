@@ -20,6 +20,7 @@ function deletePost(id) {
       <div class="nav-links">
         <span class="nav-greeting">Hi, {{ auth?.name }}</span>
         <a href="/posts" class="nav-link">Public Blog</a>
+        <a href="/posts/create" class="nav-btn">+ New Post</a>
         <button @click="router.post('/logout')" class="nav-btn">Logout</button>
       </div>
     </nav>
