@@ -24,7 +24,26 @@ Route::get('/posts/{id}', [PostController::class, 'show']);
 // Protected routes - must be logged in
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+        $user = auth()->user();
+        $posts = \App\Models\Post::with(['comments'])
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get()
+            ->map(function ($post) {
+                return [
+                    'id'            => $post->id,
+                    'title'         => $post->title,
+                    'content'       => $post->content,
+                    'comment_count' => $post->comments->count(),
+                    'created_at'    => $post->created_at->diffForHumans(),
+                ];
+            });
+        return Inertia::render('Dashboard', [
+            'auth'        => $user,
+            'posts'       => $posts,
+            'totalPosts'  => $posts->count(),
+            'totalComments' => $posts->sum('comment_count'),
+        ]);
     })->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
