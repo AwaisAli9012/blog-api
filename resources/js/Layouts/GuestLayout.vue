@@ -8,8 +8,8 @@ import { Link } from '@inertiajs/vue3';
         class="flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0"
     >
         <div>
-            <Link href="/">
-                <ApplicationLogo class="h-20 w-20 fill-current text-gray-500" />
+            <Link href="/posts" style="text-decoration:none;font-size:1.4rem;font-weight:800;color:#4f46e5">
+                📝 My Blog
             </Link>
         </div>
 
