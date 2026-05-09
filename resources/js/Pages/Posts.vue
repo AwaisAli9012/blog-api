@@ -126,7 +126,7 @@ function remove(id) {
 .post-title:hover { color: #818cf8; }
 .post-content { color: #94a3b8; font-size: 0.88rem; line-height: 1.65; margin-bottom: 12px; }
 .post-meta { display: flex; gap: 14px; font-size: 0.75rem; color: #475569; }
-.icon-btn { background: none; border: none; cursor: pointer; color: #475569; font-size: 1rem; padding: 4px; border-radius: 6px; flex-shrink: 0; }
+.icon-btn { background: #2d1f1f; border: 1px solid #4b1f1f; cursor: pointer; color: #f87171; font-size: 1rem; padding: 4px 8px; border-radius: 6px; flex-shrink: 0; }
 .icon-btn:hover { color: #ef4444; }
 .icon-btn.small { font-size: 0.75rem; }
 .comments { margin-top: 20px; border-top: 1px solid #334155; padding-top: 16px; }
