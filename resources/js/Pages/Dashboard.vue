@@ -46,7 +46,7 @@ function deletePost(id) {
         <div class="card">
           <div v-if="posts.length === 0" class="empty">
             <p>No posts yet.</p>
-            <a href="/posts" class="accent-link">Write your first post →</a>
+            <a href="/posts/create" class="accent-link">Write your first post →</a>
           </div>
           <div v-for="(post, i) in posts" :key="post.id" class="post-row"
             :style="i < posts.length - 1 ? 'border-bottom: 1px solid #334155' : ''">
