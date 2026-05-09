@@ -32,6 +32,13 @@ class PostController extends Controller
         $post = Post::with(['user','comments.user'])->findOrFail($id);
         return response()->json(['post' => $post, 'auth' => auth()->user()]);
     }
+    public function create()
+    {
+        return Inertia::render('PostCreate', [
+            'auth' => auth()->user()
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

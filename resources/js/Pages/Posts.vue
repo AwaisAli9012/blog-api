@@ -67,6 +67,7 @@ function remove(id) {
         <template v-if="auth">
           <span class="nav-greeting">Hi, {{ auth.name }}</span>
           <a href="/dashboard" class="nav-link">Dashboard</a>
+          <a href="/posts/create" class="nav-btn">+ New Post</a>
           <button @click="router.post('/logout')" class="nav-btn">Logout</button>
         </template>
         <template v-else>
@@ -142,15 +143,7 @@ function remove(id) {
         </div>
       </div>
 
-      <!-- Create Post -->
-      <div v-if="auth" class="section">
-        <p class="section-label">NEW POST</p>
-        <div class="card">
-          <input v-model="title" placeholder="Title..." class="field" />
-          <textarea v-model="content" placeholder="What's on your mind?" class="field textarea"></textarea>
-          <button @click="submit" class="accent-btn large">Publish →</button>
-        </div>
-      </div>
+
 
     </div>
   </div>
