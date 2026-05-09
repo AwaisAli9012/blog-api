@@ -8,14 +8,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 // Welcome page
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::get('/', function () { return redirect('/posts'); });
 
 // Public routes - anyone can view posts
 Route::get('/posts', [PostController::class, 'index']);
