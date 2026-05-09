@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
@@ -10,82 +9,93 @@ const props = defineProps({
 })
 
 function deletePost(id) {
-  if (confirm('Delete this post?')) {
-    router.delete(`/posts/${id}`)
-  }
+  if (confirm('Delete this post?')) router.delete(`/posts/${id}`)
 }
 </script>
 
 <template>
-  <div style="min-height:100vh;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:0">
-
-    <!-- Navbar -->
-    <nav style="background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);padding:16px 32px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.2)">
-      <a href="/posts" style="color:white;font-size:1.2rem;font-weight:800;text-decoration:none">📝 My Blog</a>
-      <div style="display:flex;align-items:center;gap:20px">
-        <span style="color:rgba(255,255,255,0.9);font-size:0.9rem">Hi, {{ auth?.name }}</span>
-        <a href="/posts" style="color:white;text-decoration:none;font-size:0.85rem;background:rgba(255,255,255,0.2);padding:6px 14px;border-radius:20px">Public Blog</a>
-        <button @click="router.post('/logout')" style="background:white;color:#667eea;border:none;padding:6px 14px;border-radius:20px;font-size:0.85rem;font-weight:700;cursor:pointer">Logout</button>
+  <div class="page">
+    <nav class="nav">
+      <a href="/posts" class="nav-brand">📝 My Blog</a>
+      <div class="nav-links">
+        <span class="nav-greeting">Hi, {{ auth?.name }}</span>
+        <a href="/posts" class="nav-link">Public Blog</a>
+        <button @click="router.post('/logout')" class="nav-btn">Logout</button>
       </div>
     </nav>
 
-    <div style="max-width:860px;margin:0 auto;padding:40px 20px">
-
-      <!-- Header -->
-      <div style="margin-bottom:32px">
-        <h1 style="color:white;font-size:2rem;font-weight:800;margin:0 0 6px">Your Dashboard</h1>
-        <p style="color:rgba(255,255,255,0.75);margin:0;font-size:0.95rem">Manage your posts and track engagement</p>
+    <div class="container">
+      <div>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-sub">Manage your posts and track engagement</p>
       </div>
 
-      <!-- Stats Cards -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:36px">
-        <div style="background:white;border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.1)">
-          <p style="margin:0 0 6px;color:#9ca3af;font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Total Posts</p>
-          <p style="margin:0;font-size:2.5rem;font-weight:800;color:#1a1a2e">{{ totalPosts }}</p>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <p class="stat-label">TOTAL POSTS</p>
+          <p class="stat-number">{{ totalPosts }}</p>
         </div>
-        <div style="background:white;border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.1)">
-          <p style="margin:0 0 6px;color:#9ca3af;font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Total Comments</p>
-          <p style="margin:0;font-size:2.5rem;font-weight:800;color:#1a1a2e">{{ totalComments }}</p>
+        <div class="stat-card">
+          <p class="stat-label">TOTAL COMMENTS</p>
+          <p class="stat-number">{{ totalComments }}</p>
         </div>
       </div>
 
-      <!-- Posts List -->
-      <div style="background:white;border-radius:20px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,0.1)">
-        <h2 style="margin:0 0 20px;font-size:1.1rem;font-weight:700;color:#1a1a2e">Your Posts</h2>
-
-        <div v-if="posts.length === 0" style="text-align:center;padding:40px;color:#9ca3af">
-          <p style="font-size:1.1rem;margin:0">No posts yet.</p>
-          <a href="/posts" style="color:#667eea;font-weight:700;font-size:0.9rem">Create your first post →</a>
-        </div>
-
-        <div v-for="post in posts" :key="post.id"
-          style="display:flex;justify-content:space-between;align-items:center;padding:16px;border-radius:12px;margin-bottom:10px;background:#f8f9ff;border:1px solid #eeefff;gap:12px">
-
-          <div style="flex:1;min-width:0">
-            <a :href="`/posts/${post.id}`"
-              style="font-weight:700;color:#1a1a2e;text-decoration:none;font-size:0.95rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
-              {{ post.title }}
-            </a>
-            <div style="display:flex;gap:12px;margin-top:4px;flex-wrap:wrap">
-              <span style="font-size:0.75rem;color:#9ca3af">📅 {{ post.created_at }}</span>
-              <span style="font-size:0.75rem;color:#667eea;font-weight:600">💬 {{ post.comment_count }} comment{{ post.comment_count !== 1 ? 's' : '' }}</span>
+      <div>
+        <p class="section-label">YOUR POSTS</p>
+        <div class="card">
+          <div v-if="posts.length === 0" class="empty">
+            <p>No posts yet.</p>
+            <a href="/posts" class="accent-link">Write your first post →</a>
+          </div>
+          <div v-for="(post, i) in posts" :key="post.id" class="post-row"
+            :style="i < posts.length - 1 ? 'border-bottom: 1px solid #334155' : ''">
+            <div style="flex:1;min-width:0">
+              <a :href="`/posts/${post.id}`" class="post-title">{{ post.title }}</a>
+              <div class="post-meta">
+                <span>📅 {{ post.created_at }}</span>
+                <span class="accent">💬 {{ post.comment_count }} comment{{ post.comment_count !== 1 ? 's' : '' }}</span>
+              </div>
+            </div>
+            <div class="row-actions">
+              <a :href="`/posts/${post.id}`" class="view-btn">View</a>
+              <button @click="deletePost(post.id)" class="del-btn">Delete</button>
             </div>
           </div>
-
-          <div style="display:flex;gap:8px;flex-shrink:0">
-            <a :href="`/posts/${post.id}`"
-              style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;text-decoration:none;border:none;padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer">
-              View
-            </a>
-            <button @click="deletePost(post.id)"
-              style="background:#fee2e2;color:#ef4444;border:none;padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer">
-              Delete
-            </button>
-          </div>
-
         </div>
       </div>
-
     </div>
   </div>
 </template>
+
+<style scoped>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.page { min-height: 100vh; background: #0f172a; color: #f1f5f9; font-family: system-ui, sans-serif; }
+.nav { background: #1e293b; border-bottom: 1px solid #334155; padding: 16px 28px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.nav-brand { color: #f1f5f9; font-size: 1.05rem; font-weight: 800; text-decoration: none; }
+.nav-links { display: flex; align-items: center; gap: 16px; }
+.nav-greeting { color: #64748b; font-size: 0.82rem; }
+.nav-link { color: #94a3b8; text-decoration: none; font-size: 0.85rem; }
+.nav-link:hover { color: #f1f5f9; }
+.nav-btn { background: #6366f1; color: white; border: none; padding: 7px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+.container { max-width: 760px; margin: 0 auto; padding: 48px 20px; display: flex; flex-direction: column; gap: 36px; }
+.page-title { font-size: 1.8rem; font-weight: 800; color: #f1f5f9; margin-bottom: 6px; }
+.page-sub { color: #64748b; font-size: 0.9rem; }
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.stat-card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 24px; }
+.stat-label { font-size: 0.7rem; font-weight: 700; color: #475569; letter-spacing: 0.1em; margin-bottom: 10px; }
+.stat-number { font-size: 2.8rem; font-weight: 800; color: #818cf8; }
+.section-label { font-size: 0.72rem; font-weight: 700; color: #475569; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 14px; }
+.card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; overflow: hidden; }
+.empty { padding: 40px; text-align: center; color: #475569; }
+.accent-link { color: #818cf8; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+.post-row { display: flex; align-items: center; gap: 16px; padding: 18px 24px; }
+.post-title { font-weight: 700; color: #e2e8f0; text-decoration: none; font-size: 0.95rem; display: block; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 400px; }
+.post-title:hover { color: #818cf8; }
+.post-meta { display: flex; gap: 14px; font-size: 0.75rem; color: #475569; }
+.accent { color: #818cf8; font-weight: 600; }
+.row-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.view-btn { background: #6366f1; color: white; text-decoration: none; padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; }
+.del-btn { background: transparent; color: #ef4444; border: 1px solid #3f1e1e; padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+.del-btn:hover { background: #3f1e1e; }
+</style>
