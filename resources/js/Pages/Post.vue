@@ -1,8 +1,29 @@
 <script setup>
+import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
 
-defineProps({ post: Object, auth: Object })
+const props = defineProps({ post: Object, auth: Object })
 
+const isEditing = ref(false)
+const editTitle = ref('')
+const editContent = ref('')
+
+function startEdit() {
+  editTitle.value = props.post.title
+  editContent.value = props.post.content
+  isEditing.value = true
+}
+function cancelEdit() {
+  isEditing.value = false
+  editTitle.value = ''
+  editContent.value = ''
+}
+function saveEdit() {
+  if (!editTitle.value.trim() || !editContent.value.trim()) return
+  router.put(`/posts/${props.post.id}`, { title: editTitle.value, content: editContent.value }, {
+    onSuccess: () => cancelEdit()
+  })
+}
 function logout() { router.post('/logout') }
 function remove(id) {
   if (confirm('Delete this post?')) router.delete(`/posts/${id}`)
@@ -39,8 +60,25 @@ function remove(id) {
 
         <div class="post-content">{{ post.content }}</div>
 
-        <div v-if="auth && auth.id === post.user_id" class="delete-row">
-          <button @click="remove(post.id)" class="delete-btn">🗑 Delete Post</button>
+        <div v-if="!isEditing">
+          <div v-if="auth && auth.id === post.user_id" class="delete-row">
+            <button @click="startEdit()" class="edit-btn">✏️ Edit Post</button>
+            <button @click="remove(post.id)" class="delete-btn">🗑 Delete Post</button>
+          </div>
+        </div>
+        <div v-else>
+          <div class="field-group">
+            <label class="edit-label">Title</label>
+            <input v-model="editTitle" class="edit-field" />
+          </div>
+          <div class="field-group">
+            <label class="edit-label">Content</label>
+            <textarea v-model="editContent" class="edit-field edit-textarea"></textarea>
+          </div>
+          <div class="edit-actions">
+            <button @click="saveEdit()" class="save-btn">Save Changes</button>
+            <button @click="cancelEdit()" class="cancel-btn">Cancel</button>
+          </div>
         </div>
       </div>
     </div>
@@ -66,6 +104,18 @@ function remove(id) {
 .meta-tag { font-size: 0.8rem; color: #94a3b8; background: #0f172a; padding: 4px 12px; border-radius: 20px; border: 1px solid #334155; }
 .post-content { color: #94a3b8; font-size: 1rem; line-height: 1.8; white-space: pre-wrap; }
 .delete-row { margin-top: 36px; padding-top: 24px; border-top: 1px solid #334155; }
+.edit-btn { background: transparent; color: #818cf8; border: 1px solid #818cf8; border-radius: 8px; padding: 8px 20px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+.edit-btn:hover { background: #818cf8; color: white; }
 .delete-btn { background: transparent; color: #ef4444; border: 1px solid #ef4444; border-radius: 8px; padding: 8px 20px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+.field-group { margin-bottom: 16px; margin-top: 24px; }
+.edit-label { display: block; font-size: 0.78rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 8px; }
+.edit-field { width: 100%; background: #0f172a; border: 1px solid #334155; color: #f1f5f9; border-radius: 10px; padding: 12px 16px; font-size: 0.9rem; font-family: inherit; outline: none; }
+.edit-field:focus { border-color: #6366f1; }
+.edit-textarea { min-height: 180px; resize: vertical; line-height: 1.7; }
+.edit-actions { display: flex; gap: 12px; margin-top: 20px; }
+.save-btn { background: #6366f1; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+.save-btn:hover { background: #4f46e5; }
+.cancel-btn { background: transparent; color: #64748b; border: 1px solid #334155; padding: 10px 20px; border-radius: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer; }
+.cancel-btn:hover { background: #334155; color: #f1f5f9; }
 .delete-btn:hover { background: #ef4444; color: white; }
 </style>
