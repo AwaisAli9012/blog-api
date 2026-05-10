@@ -57,12 +57,19 @@ class PostController extends Controller
             'content' => 'required|string',
         ]);
         $post = Post::findOrFail($id);
+        if(auth()->id() !== $post->user_id){
+            abort(403);
+        }
         $post->update($validated);
-        return response()->json($post);
+        return redirect('/posts');
     }
+
     public function destroy($id)
     {
-        $post = Post::findOrFail($id);
+    $post = Post::findOrFail($id);
+        if(auth()->id() !== $post->user_id){
+            abort(403);
+        }
         $post->delete();
         return redirect('/posts');
     }

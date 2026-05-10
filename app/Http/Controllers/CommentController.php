@@ -31,4 +31,13 @@ class CommentController extends Controller
         $comment->delete();
         return back();
     }
+
+    public function update(Request $request, $id){
+        $comment=Comment::findOrFail($id);
+        if (auth()->id() !== $comment->user_id) {
+            abort(403);
+        }
+        $comment->update(['body' => $request->body]);
+        return back();
+    }
 }

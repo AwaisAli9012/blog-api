@@ -5,6 +5,8 @@ import { router } from '@inertiajs/vue3'
 const props = defineProps({ posts: Array, auth: Object })
 const commentText = ref({})
 const openComments = ref({})
+const editingCommentId = ref(null)
+const editingCommentText = ref('')
 const title = ref('')
 const content = ref('')
 
@@ -25,6 +27,21 @@ function confirmYes() {
 function confirmNo() { showModal.value = false }
 
 function toggleComments(id) { openComments.value[id] = !openComments.value[id] }
+
+function startEdit(comment) {
+  editingCommentId.value = comment.id
+  editingCommentText.value = comment.body
+}
+function cancelEdit() {
+  editingCommentId.value = null
+  editingCommentText.value = ''
+}
+function saveEdit(commentId) {
+  if (!editingCommentText.value.trim()) return
+  router.put(`/comments/${commentId}`, { body: editingCommentText.value }, {
+    onSuccess: () => cancelEdit()
+  })
+}
 
 function deleteComment(id) {
   askConfirm('Delete this comment?', () => router.delete(`/comments/${id}`))
@@ -120,11 +137,23 @@ function remove(id) {
                 <div v-for="comment in (post.comments ?? [])" :key="comment.id" class="comment">
                   <div class="avatar">{{ (comment.user?.name ?? '?').charAt(0).toUpperCase() }}</div>
                   <div class="comment-body">
-                    <div class="comment-row">
-                      <strong>{{ comment.user?.name ?? 'Unknown' }}</strong>
-                      <button v-if="auth && auth.id === comment.user_id" @click="deleteComment(comment.id)" class="delete-icon-btn small">🗑</button>
+                    <div v-if="editingCommentId !== comment.id">
+                      <div class="comment-row">
+                        <strong>{{ comment.user?.name ?? 'Unknown' }}</strong>
+                        <div style="display:flex;gap:6px">
+                          <button v-if="auth && auth.id === comment.user_id" @click="startEdit(comment)" class="edit-icon-btn small">✏️</button>
+                          <button v-if="auth && auth.id === comment.user_id" @click="deleteComment(comment.id)" class="delete-icon-btn small">🗑</button>
+                        </div>
+                      </div>
+                      <p>{{ comment.body }}</p>
                     </div>
-                    <p>{{ comment.body }}</p>
+                    <div v-else>
+                      <input v-model="editingCommentText" class="comment-field" style="width:100%;margin-bottom:8px" />
+                      <div style="display:flex;gap:8px">
+                        <button @click="saveEdit(comment.id)" class="accent-btn">Save</button>
+                        <button @click="cancelEdit()" class="modal-cancel">Cancel</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -195,6 +224,9 @@ function remove(id) {
 .post-meta { display: flex; gap: 14px; font-size: 0.75rem; color: #475569; }
 
 /* DELETE BUTTON — now clearly visible */
+.edit-icon-btn { background: #1e3a5f; border: 1px solid #1d4ed8; cursor: pointer; color: #93c5fd; font-size: 0.95rem; padding: 5px 9px; border-radius: 8px; flex-shrink: 0; transition: all 0.2s; }
+.edit-icon-btn:hover { background: #1d4ed8; color: white; border-color: #1d4ed8; }
+.edit-icon-btn.small { font-size: 0.75rem; padding: 3px 7px; }
 .delete-icon-btn { background: #2d1515; border: 1px solid #7f1d1d; cursor: pointer; color: #f87171; font-size: 0.95rem; padding: 5px 9px; border-radius: 8px; flex-shrink: 0; transition: all 0.2s; }
 .delete-icon-btn:hover { background: #ef4444; color: white; border-color: #ef4444; }
 .delete-icon-btn.small { font-size: 0.75rem; padding: 3px 7px; }
