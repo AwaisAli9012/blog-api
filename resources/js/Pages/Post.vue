@@ -24,14 +24,38 @@ function saveEdit() {
     onSuccess: () => cancelEdit()
   })
 }
+const showModal = ref(false)
+const modalMessage = ref('')
+const modalAction = ref(null)
+
+function askConfirm(message, action) {
+  modalMessage.value = message
+  modalAction.value = action
+  showModal.value = true
+}
+function confirmYes() {
+  if (modalAction.value) modalAction.value()
+  showModal.value = false
+}
+function confirmNo() { showModal.value = false }
 function logout() { router.post('/logout') }
 function remove(id) {
-  if (confirm('Delete this post?')) router.delete(`/posts/${id}`)
+  askConfirm('Delete this post? This cannot be undone.', () => router.delete(`/posts/${id}`))
 }
 </script>
 
 <template>
   <div class="page">
+
+    <div v-if="showModal" class="modal-overlay" @click.self="confirmNo">
+      <div class="modal">
+        <p class="modal-msg">{{ modalMessage }}</p>
+        <div class="modal-actions">
+          <button @click="confirmNo" class="modal-cancel">Cancel</button>
+          <button @click="confirmYes" class="modal-confirm">Delete</button>
+        </div>
+      </div>
+    </div>
     <nav class="nav">
       <a href="/posts" class="nav-brand">📝 My Blog</a>
       <div class="nav-links">
@@ -118,4 +142,10 @@ function remove(id) {
 .cancel-btn { background: transparent; color: #64748b; border: 1px solid #334155; padding: 10px 20px; border-radius: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer; }
 .cancel-btn:hover { background: #334155; color: #f1f5f9; }
 .delete-btn:hover { background: #ef4444; color: white; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 999; }
+.modal { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 32px; max-width: 360px; width: 90%; text-align: center; }
+.modal-msg { color: #f1f5f9; font-size: 1rem; font-weight: 600; margin-bottom: 24px; line-height: 1.5; }
+.modal-actions { display: flex; gap: 12px; justify-content: center; }
+.modal-cancel { background: #334155; color: #94a3b8; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+.modal-confirm { background: #ef4444; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
 </style>
