@@ -20,39 +20,30 @@ class SyncGithubActivity extends Command
             ->get("https://api.github.com/users/{$username}/events");
 
         $events = $response->json();
-        if (!is_array($events)) {
-            $this->error('GitHub API error: ' . json_encode($events));
+
+        $todayEvents = [];
+        foreach ($events as $event) {
+            if (is_array($event) && isset($event["created_at"]) && str_starts_with($event["created_at"], $today)) {
+                $todayEvents[] = $event;
+            }
+        }
+
+        $this->info("Today events found: " . count($todayEvents));
+
+        if (count($todayEvents) === 0) {
+            $this->info("No activity today.");
             return;
         }
 
-        $todayEvents = array_filter($events, function($event) use ($today) {
-            if (!is_array($event) || !isset($event['created_at'])) return false;
-            return str_starts_with($event['created_at'], $today);
-        });
-
-        if (empty($todayEvents)) {
-            $this->info('No activity today.');
-            return;
-        }
-
-        $lines = ["## GitHub Activity for {$today}\n"];
+        $lines = ["## GitHub Activity for " . $today];
         foreach ($todayEvents as $event) {
-            $type = $event['type'];
-            $repo = $event['repo']['name'];
-            $time = substr($event['created_at'], 11, 5);
-            $lines[] = "- **{$type}** on `{$repo}` at {$time}";
+            $lines[] = "- " . $event["type"] . " on " . $event["repo"]["name"] . " at " . substr($event["created_at"], 11, 5);
         }
 
-        $content = implode("\n", $lines);
-        $title = "GitHub Activity - {$today}";
-
+        $title = "GitHub Activity - " . $today;
         $user = User::first();
-        Post::create([
-            'title' => $title,
-            'content' => $content,
-            'user_id' => $user->id,
-        ]);
-
-        $this->info("Post created: {$title}");
+        Post::create(["title" => $title, "content" => implode("
+", $lines), "user_id" => $user->id]);
+        $this->info("Post created: " . $title);
     }
 }
