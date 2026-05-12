@@ -26,6 +26,7 @@ class SyncGithubActivity extends Command
         }
 
         $todayEvents = array_filter($events, function($event) use ($today) {
+            if (!is_array($event) || !isset($event['created_at'])) return false;
             return str_starts_with($event['created_at'], $today);
         });
 
