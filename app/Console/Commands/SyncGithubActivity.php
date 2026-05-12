@@ -50,7 +50,7 @@ class SyncGithubActivity extends Command
 
         $title = "GitHub Activity - " . $today;
         $user = User::first();
-        Post::create(["title" => $title, "content" => implode("
+        Post::create(["title" => $title, "slug" => "github-activity-" . $today . "-" . time(), "content" => implode("
 ", $lines), "user_id" => $user->id]);
         $this->info("Post created: " . $title);
     }
