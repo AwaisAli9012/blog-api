@@ -53,18 +53,3 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
-Route::get('/run-github-sync', function() {
-    Artisan::call('github:sync');
-    return Artisan::output();
-});
-Route::get('/debug-github', function() {
-    $token = env('GITHUB_TOKEN');
-    $username = env('GITHUB_USERNAME');
-    $url = 'https://api.github.com/users/' . $username . '/events';
-    $response = Illuminate\Support\Facades\Http::withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/vnd.github+json',
-        'X-GitHub-Api-Version' => '2022-11-28',
-    ])->get($url);
-    return response()->json(['url' => $url, 'status' => $response->status(), 'data' => $response->json()]);
-});
