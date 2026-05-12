@@ -58,7 +58,13 @@ Route::get('/run-github-sync', function() {
     return Artisan::output();
 });
 Route::get('/debug-github', function() {
-    $response = Illuminate\Support\Facades\Http::withToken(env('GITHUB_TOKEN'))
-        ->get('https://api.github.com/users/' . env('GITHUB_USERNAME') . '/events');
-    return response()->json($response->json());
+    $token = env('GITHUB_TOKEN');
+    $username = env('GITHUB_USERNAME');
+    $url = 'https://api.github.com/users/' . $username . '/events';
+    $response = Illuminate\Support\Facades\Http::withHeaders([
+        'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/vnd.github+json',
+        'X-GitHub-Api-Version' => '2022-11-28',
+    ])->get($url);
+    return response()->json(['url' => $url, 'status' => $response->status(), 'data' => $response->json()]);
 });
