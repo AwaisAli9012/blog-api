@@ -20,6 +20,10 @@ class SyncGithubActivity extends Command
             ->get("https://api.github.com/users/{$username}/events");
 
         $events = $response->json();
+        if (!is_array($events)) {
+            $this->error('GitHub API error: ' . json_encode($events));
+            return;
+        }
 
         $todayEvents = array_filter($events, function($event) use ($today) {
             return str_starts_with($event['created_at'], $today);
