@@ -12,19 +12,22 @@ class SyncGithubActivity extends Command
 
     public function handle()
     {
-        $username = env('GITHUB_USERNAME');
-        $token = env('GITHUB_TOKEN');
+        $username = trim(env('GITHUB_USERNAME'));
+        $token = trim(env('GITHUB_TOKEN'));
         $today = now()->toDateString();
 
-        $this->info("Username: " . $username);
-        $this->info("Today: " . $today);
-
-        $response = Http::withToken($token)
-            ->get("https://api.github.com/users/{$username}/events");
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/vnd.github+json',
+            'X-GitHub-Api-Version' => '2022-11-28',
+        ])->get("https://api.github.com/users/{$username}/events");
 
         $events = $response->json();
-        $this->info("Total events: " . count($events));
-        $this->info("First event date: " . ($events[0]["created_at"] ?? "none"));
+
+        if (!is_array($events)) {
+            $this->error('GitHub API error.');
+            return;
+        }
 
         $todayEvents = [];
         foreach ($events as $event) {
