@@ -12,7 +12,9 @@ Route::get('/posts/{id}', [App\Http\Controllers\PostController::class, 'apiShow'
 
 Route::post('/auto-post', function(Illuminate\Http\Request $request) {
     $secret = $request->header('X-Secret-Key');
-    return response()->json(['secret' => env('AUTO_POST_SECRET'), 'received' => $secret]);
+    if (trim($secret) !== trim(env('AUTO_POST_SECRET'))) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
     $user = App\Models\User::first();
     $post = App\Models\Post::create([
         'title' => $request->input('title'),
