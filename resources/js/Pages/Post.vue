@@ -82,7 +82,7 @@ function remove(id) {
           <span class="meta-tag">📅 {{ new Date(post.created_at).toLocaleDateString() }}</span>
         </div>
 
-        <div class="post-content">{{ post.content }}</div>
+        <div class="post-content"><div v-html="post.content"></div></div>
 
         <div v-if="!isEditing">
           <div v-if="auth && auth.id === post.user_id" class="delete-row">

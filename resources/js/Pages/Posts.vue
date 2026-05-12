@@ -117,7 +117,7 @@ function remove(id) {
           <div class="card-top">
             <div style="flex:1;min-width:0">
               <a :href="`/posts/${post.id}`" class="post-title">{{ post.title }}</a>
-              <p class="post-content">{{ post.content }}</p>
+              <p class="post-content"><div v-html="post.content"></div></p>
               <div class="post-meta">
                 <span>📅 {{ new Date(post.created_at).toLocaleDateString() }}</span>
                 <span v-if="post.user">✍️ {{ post.user.name }}</span>
