@@ -119,7 +119,7 @@ function remove(id) {
               <a :href="`/posts/${post.id}`" class="post-title">{{ post.title }}</a>
               <p class="post-content">{{ post.content }}</p>
               <div class="post-meta">
-                <span>📅 Just now</span>
+                <span>📅 {{ new Date(post.created_at).toLocaleDateString() }}</span>
                 <span v-if="post.user">✍️ {{ post.user.name }}</span>
               </div>
             </div>
