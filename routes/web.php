@@ -53,3 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+Route::get('/run-github-sync', function() {
+    Artisan::call('github:sync');
+    return Artisan::output();
+});
