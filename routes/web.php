@@ -57,3 +57,8 @@ Route::get('/run-github-sync', function() {
     Artisan::call('github:sync');
     return Artisan::output();
 });
+Route::get('/debug-github', function() {
+    $response = Illuminate\Support\Facades\Http::withToken(env('GITHUB_TOKEN'))
+        ->get('https://api.github.com/users/' . env('GITHUB_USERNAME') . '/events');
+    return response()->json($response->json());
+});
