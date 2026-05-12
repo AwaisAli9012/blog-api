@@ -16,10 +16,15 @@ class SyncGithubActivity extends Command
         $token = env('GITHUB_TOKEN');
         $today = now()->toDateString();
 
+        $this->info("Username: " . $username);
+        $this->info("Today: " . $today);
+
         $response = Http::withToken($token)
             ->get("https://api.github.com/users/{$username}/events");
 
         $events = $response->json();
+        $this->info("Total events: " . count($events));
+        $this->info("First event date: " . ($events[0]["created_at"] ?? "none"));
 
         $todayEvents = [];
         foreach ($events as $event) {
